@@ -1,7 +1,6 @@
 import { Produto as ProdutoType } from '../App'
 import Produto from '../components/Produto'
 import { useGetProdutosQuery } from '../services/api'
-
 import * as S from './styles'
 
 type Props = {
@@ -12,16 +11,15 @@ type Props = {
 }
 
 const ProdutosComponent = ({ produtos, favoritos, favoritar }: Props) => {
+  const { data, isLoading } = useGetProdutosQuery()
+
   const produtoEstaNosFavoritos = (produto: ProdutoType) => {
     const produtoId = produto.id
     const IdsDosFavoritos = favoritos.map((f) => f.id)
-
-    const { data: Produto, isLoading } = useGetProdutosQuery()
-
-    if (isLoading) return <h2>por favor aguarde...</h2>
-
     return IdsDosFavoritos.includes(produtoId)
   }
+
+  if (isLoading) return <h2>por favor aguarde...</h2>
 
   return (
     <>
