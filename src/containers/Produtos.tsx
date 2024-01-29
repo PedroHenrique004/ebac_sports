@@ -2,6 +2,7 @@ import { Produto as ProdutoType } from '../App'
 import Produto from '../components/Produto'
 import { useGetProdutosQuery } from '../services/api'
 import * as S from './styles'
+import React, { useState, useEffect } from 'react'
 
 type Props = {
   produtos: ProdutoType[]
@@ -10,8 +11,15 @@ type Props = {
   favoritar: (produto: ProdutoType) => void
 }
 
-const ProdutosComponent = ({ produtos, favoritos, favoritar }: Props) => {
-  const { data, isLoading } = useGetProdutosQuery()
+const ProdutosComponent = ({ favoritos, favoritar }: Props) => {
+  const [produtosApi, setProdutosApi] = useState<ProdutoType[]>([])
+  const { isLoading } = useGetProdutosQuery()
+
+  useEffect(() => {
+    fetch('https://fake-api-tau.vercel.app/api/ebac_sports')
+      .then((response) => response.json())
+      .then((data) => setProdutosApi(data))
+  }, [])
 
   const produtoEstaNosFavoritos = (produto: ProdutoType) => {
     const produtoId = produto.id
@@ -24,7 +32,7 @@ const ProdutosComponent = ({ produtos, favoritos, favoritar }: Props) => {
   return (
     <>
       <S.Produtos>
-        {produtos.map((produto) => (
+        {produtosApi.map((produto) => (
           <Produto
             estaNosFavoritos={produtoEstaNosFavoritos(produto)}
             key={produto.id}
